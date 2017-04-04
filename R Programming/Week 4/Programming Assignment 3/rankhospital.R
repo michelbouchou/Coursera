@@ -1,5 +1,4 @@
-rankhospital <- function(state, outcome, num = "best") {
-    library(plyr)
+rankhospital <- function(state, outcome, num = "best", na = FALSE) {
     ## Read outcome data
     ## Check that state and outcome are valid
     ## Return hospital name in that state with the given rank
@@ -33,9 +32,14 @@ rankhospital <- function(state, outcome, num = "best") {
     }
     
     #get rid of the NA's in the desired outcome column
-    required_columns <- as.numeric(new_data[,outcome_column])
-    bad <- is.na(required_columns)
-    desired_data <- new_data[!bad, ]
+    if (!na) {
+        required_columns <- as.numeric(new_data[,outcome_column])
+        bad <- is.na(required_columns)
+        desired_data <- new_data[!bad, ]
+    }
+    else {
+        desired_data <- new_data
+    }
     
     columns_considered <- as.numeric(desired_data[, outcome_column])
     order.outcome <- order(columns_considered)
@@ -50,13 +54,13 @@ rankhospital <- function(state, outcome, num = "best") {
         colnames(toPrint) <- c("Hospital.Name", "Rate", "Rank")
         print(toPrint)
     }
-    else if (num == "worse" ){
+    else if (num == "worst" ){
         toPrint <- tail(ordered_rows[,c(2, outcome_column, 47)], n = 1L)
         colnames(toPrint) <- c("Hospital.Name", "Rate", "Rank")
         print(toPrint)
     }
     else if (num %in% 1:nrow(ordered_rows)) {
-        toPrint <- head(ordered_rows[,c(2, outcome_column, 47)], n = num)
+        toPrint <- ordered_rows[num ,c(2, outcome_column, 47)]
         colnames(toPrint) <- c("Hospital.Name", "Rate", "Rank")
         print(toPrint)
     }
