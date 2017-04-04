@@ -1,4 +1,4 @@
-rankhospital <- function(state, outcome, num = "best", na = FALSE) {
+rankhospital <- function(state, outcome, num = "best") {
     ## Read outcome data
     ## Check that state and outcome are valid
     ## Return hospital name in that state with the given rank
@@ -32,14 +32,10 @@ rankhospital <- function(state, outcome, num = "best", na = FALSE) {
     }
     
     #get rid of the NA's in the desired outcome column
-    if (!na) {
-        required_columns <- as.numeric(new_data[,outcome_column])
-        bad <- is.na(required_columns)
-        desired_data <- new_data[!bad, ]
-    }
-    else {
-        desired_data <- new_data
-    }
+    
+    required_columns <- as.numeric(new_data[,outcome_column])
+    bad <- is.na(required_columns)
+    desired_data <- new_data[!bad, ]
     
     columns_considered <- as.numeric(desired_data[, outcome_column])
     order.outcome <- order(columns_considered)
